@@ -1,23 +1,34 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-interface IForm{
-    email: string;
-    firstName: string;
-    lastName: string;
-    username: string;
-    password: string;
-    password1: string;
+interface IForm {
+  email: string;
+  firstName: string;
+  lastName: string;
+  username: string;
+  password: string;
+  password1: string;
+  extraError?: string;
 }
 
 function ToDoList() {
-  const { register, watch, handleSubmit, formState:{errors} } = useForm<IForm>({
-    defaultValues:{
-        email:"@naver.com",
+  const {
+    register,
+    watch,
+    handleSubmit,
+    formState: { errors },
+    setError,
+  } = useForm<IForm>({
+    defaultValues: {
+      email: "@naver.com",
     },
   });
-  const onValid = (data: any) => {
-    console.log(data);
+  const onValid = (data: IForm) => {
+    if (data.password !== data.password1) {
+      setError("password1", { message: "Password are not the same" });
+    }
+    setError("extraError", { message: "Server Offline" });
+    // 이 ExtraError는 특정한 항목에 해당되는 에러가 아니라 ,전체 form에 해당되는 에러이다.
   };
   return (
     <div>
@@ -37,7 +48,11 @@ function ToDoList() {
         />
         <span>{errors?.email?.message as string}</span>
         <input
-          {...register("firstName", { required: "firstName is required" })}
+          {...register("firstName", {
+            required: "firstName is required",
+            validate: (value) =>
+              value.includes("hacker") ? "no hacker allowed" : true,
+          })}
           placeholder="firstName"
         />
         <span>{errors?.firstName?.message as string}</span>
@@ -47,7 +62,10 @@ function ToDoList() {
         />
         <span>{errors?.lastName?.message as string}</span>
         <input
-          {...register("username", { required: "username is required", minLength: 10 })}
+          {...register("username", {
+            required: "username is required",
+            minLength: 10,
+          })}
           placeholder="username"
         />
         <span>{errors?.username?.message as string}</span>
@@ -68,6 +86,8 @@ function ToDoList() {
         />
         <span>{errors?.password1?.message as string}</span>
         <button>Add</button>
+        <span>{errors?.extraError?.message as string}</span>
+        {/* ExtraError 메시지 표시하는 곳 */}
       </form>
     </div>
   );
