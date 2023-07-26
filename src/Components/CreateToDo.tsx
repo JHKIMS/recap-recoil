@@ -9,6 +9,8 @@ interface IForm {
 function CreateToDo() {
   const { register, handleSubmit, setValue } = useForm<IForm>();
   const setTodos = useSetRecoilState(todoState);
+
+  
   const handleValid = ({ todo }: IForm) => {
     setTodos((oldTodos) => [
       { text: todo, id: Date.now(), category: "TO_DO" },
