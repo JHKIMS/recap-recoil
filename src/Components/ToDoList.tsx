@@ -1,18 +1,22 @@
 import { useRecoilValue } from "recoil";
-import { todoState } from "./atoms";
+import { todoSelector, todoState } from "./atoms";
 import CreateToDo from "./CreateToDo";
 import ToDo from "./ToDo";
 
 function ToDoList() {
   const todos = useRecoilValue(todoState);
-  console.log(todos);
+  const selectorOutput = useRecoilValue(todoSelector);
+  const [todo, doing, done] = useRecoilValue(todoSelector);
+  // console.log(todos);
+  console.log(selectorOutput);
   return (
     <div>
       <h1>ToDos</h1>
       <hr />
       <CreateToDo />
+      <h2>ToDo</h2>
       <ul>
-        {todos.map((todo) => (
+        {todo.map((todo) => (
           <ToDo key={todo.id} {...todo} />
         ))}
         {/* 이렇게 써도 잘 돌아가는 이유는 todos배열의 
@@ -23,6 +27,22 @@ function ToDoList() {
            todo가 같은 prop을 가지고 있기 때문에 가능한 코드*/}
         {/* todoState : ITodo타입 
            ToDo컴포넌트 : ITodo타입의 prop을 받는다.*/}
+      </ul>
+      <hr />
+
+      <h2>Doing</h2>
+      <ul>
+        {doing.map((todo) => (
+          <ToDo key={todo.id} {...todo} />
+        ))}
+      </ul>
+      <hr />
+
+      <h2>Done</h2>
+      <ul>
+        {done.map((todo) => (
+          <ToDo key={todo.id} {...todo} />
+        ))}
       </ul>
     </div>
   );
